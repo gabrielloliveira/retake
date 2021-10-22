@@ -19,3 +19,7 @@ class ProcessListView(ListView):
     template_name = "process/list.html"
     queryset = Process.objects.order_by("number")
 
+
+class PartListView(ListView):
+    template_name = "part/list.html"
+    queryset = Part.objects.order_by("name")
