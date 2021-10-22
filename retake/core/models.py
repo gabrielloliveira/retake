@@ -13,7 +13,7 @@ class TimeStampedModel(models.Model):
 
 
 class Process(TimeStampedModel):
-    number = models.CharField("número", max_length=255)
+    number = models.CharField("número", max_length=255, unique=True)
     class_name = models.CharField("classe", max_length=255)
     subject = models.CharField("assunto", max_length=255)
     judge = models.CharField("juíz", max_length=255)
