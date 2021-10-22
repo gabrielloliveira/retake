@@ -1,0 +1,23 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+  <h2>Resumo</h2>
+  <div class="row">
+    <div class="col-sm col-lg-2">
+      <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">{{ count_process }}</h5>
+          <p class="card-text">Processos</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm col-lg-2">
+      <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">{{ count_parts }}</h5>
+          <p class="card-text">Partes</p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
