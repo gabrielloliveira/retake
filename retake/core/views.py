@@ -1,3 +1,9 @@
-from django.shortcuts import render
+from django.views.generic import ListView
 
-# Create your views here.
+from retake.core.models import Process
+
+
+class ProcessListView(ListView):
+    template_name = "core/list.html"
+    queryset = Process.objects.order_by("number")
+
