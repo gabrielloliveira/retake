@@ -1,9 +1,14 @@
-from django.views.generic import ListView, TemplateView
+from django.contrib import messages
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
+from django.views import generic
 
+from retake.core.forms import PartForm
 from retake.core.models import Process, Part
 
 
-class IndexView(TemplateView):
+class IndexView(generic.TemplateView):
     template_name = "core/index.html"
 
     def get_context_data(self, **kwargs):
@@ -15,11 +20,39 @@ class IndexView(TemplateView):
         return context
 
 
-class ProcessListView(ListView):
+class ProcessListView(generic.ListView):
     template_name = "process/list.html"
     queryset = Process.objects.order_by("number")
 
 
-class PartListView(ListView):
+class PartListView(generic.ListView):
     template_name = "part/list.html"
     queryset = Part.objects.order_by("name")
+
+
+class PartEditView(generic.UpdateView):
+    template_name = "part/edit.html"
+    form_class = PartForm
+    pk_url_kwarg = 'uuid'
+    success_url = reverse_lazy("core:list_part")
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Part, uuid=self.kwargs['uuid'])
+
+    def form_valid(self, form):
+        messages.success(self.request, "Parte editada com sucesso.")
+        return super().form_valid(form)
+
+
+class PartDeleteView(generic.DeleteView):
+    http_method_names = ["post"]
+    success_url = reverse_lazy("core:list_part")
+    pk_url_kwarg = 'uuid'
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Part, uuid=self.kwargs['uuid'])
+
+    def delete(self, request, *args, **kwargs):
+        super(PartDeleteView, self).delete(request, *args, **kwargs)
+        messages.success(self.request, "Parte deletada com sucesso.")
+        return HttpResponseRedirect(self.success_url)
