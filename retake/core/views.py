@@ -29,6 +29,23 @@ class PartListView(generic.ListView):
     template_name = "part/list.html"
     queryset = Part.objects.order_by("name")
 
+    def get_context_data(self, **kwargs):
+        context = super(PartListView, self).get_context_data(**kwargs)
+        context.update({
+            "form": PartForm(),
+        })
+        return context
+
+
+class PartCreateView(generic.CreateView):
+    http_method_names = ["post"]
+    success_url = reverse_lazy("core:list_part")
+    form_class = PartForm
+
+    def form_valid(self, form):
+        messages.success(self.request, "Parte cadastrada com sucesso.")
+        return super().form_valid(form)
+
 
 class PartEditView(generic.UpdateView):
     template_name = "part/edit.html"
