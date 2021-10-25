@@ -52,19 +52,22 @@
       <div class="position-sticky pt-3">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">
+            <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}"
+               href="{% url 'core:index' %}">
               <span data-feather="home"></span>
               Dashboard
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'core:list_process' %}">
+            <a class="nav-link {% if 'process' in request.resolver_match.url_name %}active{% endif %}"
+               href="{% url 'core:list_process' %}">
               <span data-feather="file"></span>
               Processos
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'core:list_part' %}">
+            <a class="nav-link {% if 'part' in request.resolver_match.url_name %}active{% endif %}"
+               href="{% url 'core:list_part' %}">
               <span data-feather="user"></span>
               Partes
             </a>
