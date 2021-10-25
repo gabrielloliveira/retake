@@ -24,7 +24,7 @@
           <td>{{ process.subject }}</td>
           <td>{{ process.judge }}</td>
           <td>
-            <a href="" class="btn btn-sm btn-warning">Editar</a>
+            <a href="{% url 'core:edit_process' process.uuid %}" class="btn btn-sm btn-warning">Editar</a>
             <a href="" class="btn btn-sm btn-danger" data-bs-toggle="modal"
                data-bs-target="#delete-process-{{ process.uuid }}">
               Excluir

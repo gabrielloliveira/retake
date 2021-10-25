@@ -1,10 +1,11 @@
+from dal import autocomplete
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
 
-from retake.core.forms import PartForm
+from retake.core.forms import PartForm, ProcessForm
 from retake.core.models import Process, Part
 
 
@@ -37,6 +38,20 @@ class ProcessDeleteView(generic.DeleteView):
         super(ProcessDeleteView, self).delete(request, *args, **kwargs)
         messages.success(self.request, "Processo deletado com sucesso.")
         return HttpResponseRedirect(self.success_url)
+
+
+class ProcessEditView(generic.UpdateView):
+    template_name = "process/edit.html"
+    form_class = ProcessForm
+    pk_url_kwarg = 'uuid'
+    success_url = reverse_lazy("core:list_process")
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Process, uuid=self.kwargs['uuid'])
+
+    def form_valid(self, form):
+        messages.success(self.request, "Processo editado com sucesso.")
+        return super().form_valid(form)
 
 
 class PartListView(generic.ListView):
@@ -87,3 +102,11 @@ class PartDeleteView(generic.DeleteView):
         super(PartDeleteView, self).delete(request, *args, **kwargs)
         messages.success(self.request, "Parte deletada com sucesso.")
         return HttpResponseRedirect(self.success_url)
+
+
+class PartAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = Part.objects.all()
+        if self.q:
+            qs = qs.filter(name__icontains=self.q)
+        return qs

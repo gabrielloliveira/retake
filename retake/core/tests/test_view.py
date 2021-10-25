@@ -62,8 +62,21 @@ def test_process_list_view(client, process):
     assert "process/list.html" in response.template_name
 
 
-def test_process_update_view(client, part):
-    pass
+def test_process_update_view(client, process):
+    data = {
+        "number": process.number,
+        "class_name": "classe",
+        "subject": "assunto",
+        "judge": "juiz"
+    }
+    response = client.post(reverse("core:edit_process", kwargs={'uuid': process.uuid}), data=data)
+    assert response.status_code == HTTPStatus.FOUND
+
+    process.refresh_from_db()
+    assert process.number == data['number']
+    assert process.class_name == data['class_name']
+    assert process.subject == data['subject']
+    assert process.judge == data['judge']
 
 
 def test_process_delete_view(client, process):

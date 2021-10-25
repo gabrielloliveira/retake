@@ -1,0 +1,36 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+  <h2>Edição de {{ object.name }}</h2>
+  <form action="." method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="" class="form-label">{{ form.number.label }}</label>
+      {{ form.number|add_class:'form-control' }}
+    </div>
+    <div class="mb-3">
+      <label for="" class="form-label">{{ form.class_name.label }}</label>
+      {{ form.class_name|add_class:'form-control' }}
+    </div>
+    <div class="mb-3">
+      <label for="" class="form-label">{{ form.subject.label }}</label>
+      {{ form.subject|add_class:'form-control' }}
+    </div>
+    <div class="mb-3">
+      <label for="" class="form-label">{{ form.judge.label }}</label>
+      {{ form.judge|add_class:'form-control' }}
+    </div>
+    <div class="mb-3">
+      <label for="" class="form-label">{{ form.parts.label }}</label>
+      {{ form.parts|add_class:'form-control' }}
+    </div>
+    <button class="btn btn-primary">Editar</button>
+  </form>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+{{ form.media }}
+{% endblock %}
