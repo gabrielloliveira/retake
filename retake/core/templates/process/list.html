@@ -18,16 +18,42 @@
       </thead>
       <tbody>
       {% for process in object_list %}
-      <tr>
-        <td>{{ process.number }}</td>
-        <td>{{ process.class_name }}</td>
-        <td>{{ process.subject }}</td>
-        <td>{{ process.judge }}</td>
-        <td>
-          <a href="" class="btn btn-sm btn-warning">Editar</a>
-          <a href="" class="btn btn-sm btn-danger">Excluir</a>
-        </td>
-      </tr>
+        <tr>
+          <td>{{ process.number }}</td>
+          <td>{{ process.class_name }}</td>
+          <td>{{ process.subject }}</td>
+          <td>{{ process.judge }}</td>
+          <td>
+            <a href="" class="btn btn-sm btn-warning">Editar</a>
+            <a href="" class="btn btn-sm btn-danger" data-bs-toggle="modal"
+               data-bs-target="#delete-process-{{ process.uuid }}">
+              Excluir
+            </a>
+          </td>
+        </tr>
+
+        <div class="modal fade" id="delete-process-{{ process.uuid }}" tabindex="-1">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Deseja realmente excluir?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <p class="text-bold">Esta informação não poderá ser recuperada</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form action="{% url 'core:delete_process' process.uuid %}" method="post">
+                  {% csrf_token %}
+                  <input type="hidden" name="part" value="{{ process.uuid }}">
+                  <button type="submit" class="btn btn-danger">Excluir</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
       {% empty %}
         <p>Você não tem processos na base de dados.</p>
       {% endfor %}

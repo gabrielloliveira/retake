@@ -2,7 +2,7 @@ from http import HTTPStatus
 
 from django.urls import reverse
 
-from retake.core.models import Part
+from retake.core.models import Part, Process
 
 
 def test_part_create_view(db, client):
@@ -66,5 +66,8 @@ def test_process_update_view(client, part):
     pass
 
 
-def test_process_delete_view(client, part):
-    pass
+def test_process_delete_view(client, process):
+    assert Process.objects.count() == 1
+    response = client.post(reverse("core:delete_process", kwargs={'uuid': process.uuid}))
+    assert response.status_code == HTTPStatus.FOUND
+    assert Process.objects.count() == 0

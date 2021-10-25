@@ -25,6 +25,20 @@ class ProcessListView(generic.ListView):
     queryset = Process.objects.order_by("number")
 
 
+class ProcessDeleteView(generic.DeleteView):
+    http_method_names = ["post"]
+    success_url = reverse_lazy("core:list_process")
+    pk_url_kwarg = 'uuid'
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Process, uuid=self.kwargs['uuid'])
+
+    def delete(self, request, *args, **kwargs):
+        super(ProcessDeleteView, self).delete(request, *args, **kwargs)
+        messages.success(self.request, "Processo deletado com sucesso.")
+        return HttpResponseRedirect(self.success_url)
+
+
 class PartListView(generic.ListView):
     template_name = "part/list.html"
     queryset = Part.objects.order_by("name")
