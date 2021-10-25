@@ -49,8 +49,24 @@ def test_part_delete_view(client, part):
     assert Part.objects.count() == 0
 
 
-def test_process_create_view():
-    pass
+def test_process_create_view(client, part):
+    data = {
+        "number": "123",
+        "class_name": "classe",
+        "subject": "assunto",
+        "judge": "juíz",
+        "parts": [part.id]
+    }
+    assert Process.objects.count() == 0
+
+    response = client.post(reverse("core:create_process"), data=data)
+    assert response.status_code == HTTPStatus.FOUND
+    assert Process.objects.count() == 1
+
+    response = client.get(reverse("core:list_process"))
+    assert f"<td>{data['number']}</td>" in str(response.content)
+    assert f"<td>{data['class_name']}</td>" in str(response.content)
+    assert f"<td>{data['subject']}</td>" in str(response.content)
 
 
 def test_process_list_view(client, process):
@@ -67,7 +83,8 @@ def test_process_update_view(client, process):
         "number": process.number,
         "class_name": "classe",
         "subject": "assunto",
-        "judge": "juiz"
+        "judge": "juiz",
+        "parts": [x.id for x in process.parts.all()]
     }
     response = client.post(reverse("core:edit_process", kwargs={'uuid': process.uuid}), data=data)
     assert response.status_code == HTTPStatus.FOUND

@@ -25,6 +25,23 @@ class ProcessListView(generic.ListView):
     template_name = "process/list.html"
     queryset = Process.objects.order_by("number")
 
+    def get_context_data(self, **kwargs):
+        context = super(ProcessListView, self).get_context_data(**kwargs)
+        context.update({
+            "form": ProcessForm(),
+        })
+        return context
+
+
+class ProcessCreateView(generic.CreateView):
+    http_method_names = ["post"]
+    success_url = reverse_lazy("core:list_process")
+    form_class = ProcessForm
+
+    def form_valid(self, form):
+        messages.success(self.request, "Processo cadastrado com sucesso.")
+        return super().form_valid(form)
+
 
 class ProcessDeleteView(generic.DeleteView):
     http_method_names = ["post"]
