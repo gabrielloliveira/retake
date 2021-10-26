@@ -23,6 +23,15 @@
     </div>
   </div>
 
+  <div class="row ">
+    <div class="col">
+      <form style="display: inline" action="{% url 'core:export_process' %}" method="post">
+        {% csrf_token %}
+        {{ form_search.parts|add_class:'form-control' }}
+      </form>
+    </div>
+  </div>
+
   <div class="modal fade" id="add-process" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">

@@ -11,10 +11,18 @@ class PartForm(forms.ModelForm):
 
 
 class ProcessForm(forms.ModelForm):
-
     class Meta:
         model = Process
         fields = ("number", "subject", "class_name", "judge", "parts")
         widgets = {
             'parts': autocomplete.ModelSelect2Multiple(url='core:part_autocomplete')
+        }
+
+
+class ProcessPartForm(forms.ModelForm):
+    class Meta:
+        model = Process
+        fields = ("parts",)
+        widgets = {
+            'parts': autocomplete.ModelSelect2Multiple(url='core:process_autocomplete')
         }

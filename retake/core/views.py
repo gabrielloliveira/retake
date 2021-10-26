@@ -1,11 +1,12 @@
 from dal import autocomplete
 from django.contrib import messages
+from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
 
-from retake.core.forms import PartForm, ProcessForm
+from retake.core.forms import PartForm, ProcessForm, ProcessPartForm
 from retake.core.models import Process, Part
 from retake.core.utils import build_csv_process
 
@@ -30,6 +31,7 @@ class ProcessListView(generic.ListView):
         context = super(ProcessListView, self).get_context_data(**kwargs)
         context.update({
             "form": ProcessForm(),
+            "form_search": ProcessPartForm(),
         })
         return context
 
@@ -82,6 +84,18 @@ class ProcessExportView(generic.View):
         )
         build_csv_process(response)
         return response
+
+
+class ProcessAutocomplete(autocomplete.Select2QuerySetView):
+    def get_result_label(self, item):
+        parts_name = [f"{x.name} - {x.category}" for x in item.parts.all()]
+        return f"Número: {item.number} - " + ", ".join(parts_name)
+
+    def get_queryset(self):
+        qs = Process.objects.all()
+        if self.q:
+            qs = qs.filter(Q(parts__name__icontains=self.q) | Q(number__icontains=self.q))
+        return qs
 
 
 class PartListView(generic.ListView):
