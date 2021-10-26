@@ -60,9 +60,10 @@ class ProcessData:
         return parts
 
 
-def build_csv_process(response):
+def build_csv_process(response, qs=None):
     writer = csv.writer(response)
-    qs = Process.objects.order_by("number")
+    if not qs:
+        qs = Process.objects.order_by("number")
     writer.writerow(["Número", "Classe", "Assunto", "Juíz", "Partes"])
     for q in qs:
         writer.writerow([q.number, q.class_name, q.subject, q.judge, ", ".join(q.parts_names)])
