@@ -25,9 +25,11 @@
 
   <div class="row ">
     <div class="col">
-      <form style="display: inline" action="{% url 'core:export_process' %}" method="post">
-        {% csrf_token %}
-        {{ form_search.parts|add_class:'form-control' }}
+      <form style="display: inline" action="." method="get">
+        <div class="input-group mb-3">
+          {{ form_search.number|add_class:'form-control' }}
+          <button class="btn btn-primary">Pesquisar</button>
+        </div>
       </form>
     </div>
   </div>

@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
 
-from retake.core.forms import PartForm, ProcessForm, ProcessPartForm
+from retake.core.forms import PartForm, ProcessForm, ProcessAutocompleteForm
 from retake.core.models import Process, Part
 from retake.core.utils import build_csv_process
 
@@ -25,13 +25,18 @@ class IndexView(generic.TemplateView):
 
 class ProcessListView(generic.ListView):
     template_name = "process/list.html"
-    queryset = Process.objects.order_by("number")
+
+    def get_queryset(self):
+        queryset = Process.objects.order_by("number")
+        if self.request.GET.get("number"):
+            queryset = queryset.filter(number=self.request.GET.get("number"))
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super(ProcessListView, self).get_context_data(**kwargs)
         context.update({
             "form": ProcessForm(),
-            "form_search": ProcessPartForm(),
+            "form_search": ProcessAutocompleteForm(),
         })
         return context
 
@@ -89,7 +94,13 @@ class ProcessExportView(generic.View):
 class ProcessAutocomplete(autocomplete.Select2QuerySetView):
     def get_result_label(self, item):
         parts_name = [f"{x.name} - {x.category}" for x in item.parts.all()]
-        return f"Número: {item.number} - " + ", ".join(parts_name)
+        return f"{item.number} - " + ", ".join(parts_name)
+
+    def get_selected_result_label(self, result):
+        return result.number
+
+    def get_result_value(self, result):
+        return result.number
 
     def get_queryset(self):
         qs = Process.objects.all()

@@ -19,10 +19,12 @@ class ProcessForm(forms.ModelForm):
         }
 
 
-class ProcessPartForm(forms.ModelForm):
+class ProcessAutocompleteForm(forms.ModelForm):
+    number = forms.ModelChoiceField(
+        queryset=Process.objects.all(),
+        widget=autocomplete.ModelSelect2(url='core:process_autocomplete')
+    )
+
     class Meta:
         model = Process
-        fields = ("parts",)
-        widgets = {
-            'parts': autocomplete.ModelSelect2Multiple(url='core:process_autocomplete')
-        }
+        fields = ("number",)
