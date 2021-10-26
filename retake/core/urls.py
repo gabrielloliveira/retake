@@ -10,6 +10,7 @@ urlpatterns = [
     path("processos/criar/", views.ProcessCreateView.as_view(), name="create_process"),
     path("processos/<uuid:uuid>/deletar/", views.ProcessDeleteView.as_view(), name="delete_process"),
     path("processos/<uuid:uuid>/editar/", views.ProcessEditView.as_view(), name="edit_process"),
+    path("processos/exportar/", views.ProcessExportView.as_view(), name="export_process"),
 
     path("partes/", views.PartListView.as_view(), name="list_part"),
     path("partes/criar", views.PartCreateView.as_view(), name="create_part"),

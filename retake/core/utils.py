@@ -1,5 +1,9 @@
+import csv
+
 from bs4 import BeautifulSoup
 from django.conf import settings
+
+from retake.core.models import Process
 
 PROCESS_01 = f"{settings.BASE_DIR / 'data'}/processo-01.html"
 PROCESS_02 = f"{settings.BASE_DIR / 'data'}/processo-02.html"
@@ -54,3 +58,12 @@ class ProcessData:
                 parts.append(dict(part=parts_list[-1], category=f"ADVOGADOS {category}"))
 
         return parts
+
+
+def build_csv_process(response):
+    writer = csv.writer(response)
+    qs = Process.objects.order_by("number")
+    writer.writerow(["Número", "Classe", "Assunto", "Juíz", "Partes"])
+    for q in qs:
+        writer.writerow([q.number, q.class_name, q.subject, q.judge, ", ".join(q.parts_names)])
+    return writer

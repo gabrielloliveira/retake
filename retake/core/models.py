@@ -19,6 +19,10 @@ class Process(TimeStampedModel):
     judge = models.CharField("juíz", max_length=255)
     parts = models.ManyToManyField("Part", verbose_name="partes", blank=True)
 
+    @property
+    def parts_names(self):
+        return [f"{x.name} - {x.category}" for x in self.parts.all()]
+
     def __str__(self):
         return self.number
 

@@ -1,12 +1,13 @@
 from dal import autocomplete
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
 
 from retake.core.forms import PartForm, ProcessForm
 from retake.core.models import Process, Part
+from retake.core.utils import build_csv_process
 
 
 class IndexView(generic.TemplateView):
@@ -69,6 +70,18 @@ class ProcessEditView(generic.UpdateView):
     def form_valid(self, form):
         messages.success(self.request, "Processo editado com sucesso.")
         return super().form_valid(form)
+
+
+class ProcessExportView(generic.View):
+    http_method_names = ["post"]
+
+    def post(self, request, *args, **kwargs):
+        response = HttpResponse(
+            content_type='text/csv',
+            headers={'Content-Disposition': 'attachment; filename="processos.csv"'},
+        )
+        build_csv_process(response)
+        return response
 
 
 class PartListView(generic.ListView):
