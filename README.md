@@ -25,3 +25,21 @@ Agora com tudo configurado, você pode rodar o projeto usando o docker:
 - ```docker-compose up --build```
 
 Você poderá acessar o projeto rodando em ```http://localhost:8000```
+
+### Como acessar o admin da aplicação
+
+Para acessar o django admin, você deve criar um usuário no BD do projeto django.
+Para isso, devemos dizer para o docker que rode o comando de ciração de usuário. Fazemos isso com:
+
+- ```docker-compose exec web python manage.py createsuperuser```
+
+A partir daí, você informa seu login e senha. Após isso, você terá acesso ao projeto web.
+
+
+### E se eu quiser rodar sem usar o docker?
+
+Para rodar fora dos containers docker, você precisa fazer 2 coisas:
+
+- Instalar o redis-cli no seu computador.
+- Trocar, no arquivo ```retake/celery.py```, a URL do BROKER da aplicação. Geralmente, em ambiente local, é o 
+```redis://localhost```
