@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  web:
+    build: .
+    command: sh docker-entrypoint.sh
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+    networks:
+      - retake
+  worker:
+    build: .
+    command: celery -A retake worker --loglevel=INFO
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+    networks:
+      - retake
+  beat:
+    build: .
+    command: celery -A retake beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+    networks:
+      - retake
+  redis:
+    image: redis:alpine
+    hostname: redis
+    networks:
+      - retake
+
+networks:
+  retake:
